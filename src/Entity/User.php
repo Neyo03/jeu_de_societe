@@ -5,6 +5,8 @@ namespace App\Entity;
 use App\Repository\UserRepository;
 use App\Traits\EntityIdTrait;
 use DateTime;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Rfc4122\UuidInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -54,11 +56,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'boolean')]
     private $isEnabled;
 
-    #[ORM\Column(type: 'string', length: 255)]
-    private $validationToken;
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: ValidationUser::class)]
+    private $validationUsers;
 
-    #[ORM\Column(type: 'datetime')]
-    private $tokenValidationExpireAt;
+    public function __construct()
+    {
+        $this->validationUsers = new ArrayCollection();
+    }
 
     
     /**
@@ -150,36 +154,34 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getValidationToken(): ?string
+   
+    /**
+     * @return Collection<int, ValidationUser>
+     */
+    public function getValidationUsers(): Collection
     {
-        return $this->validationToken;
+        return $this->validationUsers;
     }
 
-    public function setValidationToken(string $validationToken): self
+    public function addValidationUser(ValidationUser $validationUser): self
     {
-        $this->validationToken = $validationToken;
+        if (!$this->validationUsers->contains($validationUser)) {
+            $this->validationUsers[] = $validationUser;
+            $validationUser->setUser($this);
+        }
 
         return $this;
     }
 
-    public function getTokenValidationExpireAt(): ?\DateTime
+    public function removeValidationUser(ValidationUser $validationUser): self
     {
-        return $this->tokenValidationExpireAt;
-    }
-
-    public function setTokenValidationExpireAt(\DateTime $tokenValidationExpireAt): self
-    {
-        $this->tokenValidationExpireAt = $tokenValidationExpireAt;
+        if ($this->validationUsers->removeElement($validationUser)) {
+            // set the owning side to null (unless already changed)
+            if ($validationUser->getUser() === $this) {
+                $validationUser->setUser(null);
+            }
+        }
 
         return $this;
-    }
-
-    public function generateValidationToken(){
-
-        $expiration  = new DateTime('+1 day');
-        $token = rtrim(strtr(base64_encode(random_bytes(32)),'+/','-_'), '=');
-
-        $this->setValidationToken($token);
-        $this->setTokenValidationExpireAt($expiration);
     }
 }
