@@ -9,6 +9,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Rfc4122\UuidInterface;
+use Ramsey\Uuid\Uuid;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\SerializedName;
@@ -17,6 +19,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
+#[UniqueEntity(fields: ['uuid'], message: 'There is already an account with this uuid')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     use EntityIdTrait;
@@ -53,14 +56,40 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private $plainPassword;
 
+    #[Assert\EqualTo(propertyPath:"plainPassword", message:"This value should be equal to password")]
+    private $secondePlainPassword;
+
     #[ORM\Column(type: 'boolean')]
     private $isEnabled;
 
-    #[ORM\OneToMany(mappedBy: 'user', targetEntity: ValidationUser::class)]
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: ValidationUser::class, cascade:["persist"])]
     private $validationUsers;
+
+    #[ORM\Column(type: 'string', length: 255)]
+    private $lastName;
+
+    #[ORM\Column(type: 'string', length: 255)]
+    private $firstName;
+
+    #[ORM\Column(type: 'text', nullable: true)]
+    private $description;
+
+    #[ORM\Column(type: 'string', length: 255)]
+    private $pseudo;
+
+    #[ORM\Column(type: 'string', length: 255)]
+    private $profilPicture;
+
+    
 
     public function __construct()
     {
+        $this->uuid = Uuid::uuid4();
+        $this->profilPicture = "sans-visage.webp";
+        $this->lastName = "";
+        $this->firstName ="";
+        $this->pseudo ="";
+        $this->isEnabled = false;
         $this->validationUsers = new ArrayCollection();
     }
 
@@ -116,6 +145,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         // If you store any temporary, sensitive data on the user, clear it here
         $this->plainPassword = null;
+        $this->secondPlainPassword = null;
     }
 
     public function getEmail(): ?string
@@ -141,6 +171,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+
 
     public function getIsEnabled(): ?bool
     {
@@ -181,6 +212,78 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $validationUser->setUser(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getSecondePlainPassword(): ?string
+    {
+        return $this->secondePlainPassword;
+    }
+
+    public function setSecondePlainPassword(string $secondePlainPassword): self
+    {
+        $this->secondePlainPassword = $secondePlainPassword;
+
+        return $this;
+    }
+
+    public function getLastName(): ?string
+    {
+        return $this->lastName;
+    }
+
+    public function setLastName(string $lastName): self
+    {
+        $this->lastName = $lastName;
+
+        return $this;
+    }
+
+    public function getFirstName(): ?string
+    {
+        return $this->firstName;
+    }
+
+    public function setFirstName(string $firstName): self
+    {
+        $this->firstName = $firstName;
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): self
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    public function getPseudo(): ?string
+    {
+        return $this->pseudo;
+    }
+
+    public function setPseudo(string $pseudo): self
+    {
+        $this->pseudo = $pseudo;
+
+        return $this;
+    }
+
+    public function getProfilPicture(): ?string
+    {
+        return $this->profilPicture;
+    }
+
+    public function setProfilPicture(string $profilPicture): self
+    {
+        $this->profilPicture = $profilPicture;
 
         return $this;
     }

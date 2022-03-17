@@ -3,7 +3,7 @@ namespace App\Traits;
 
 use Ramsey\Uuid\Rfc4122\UuidInterface;
 use Doctrine\ORM\Mapping as ORM;
-
+use Ramsey\Uuid\Uuid;
 
 trait EntityIdTrait
 {
@@ -16,12 +16,13 @@ trait EntityIdTrait
     #[ORM\Column(type: 'string', length: 180, unique: true)]
     private $uuid;
 
+
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getUuid(): UuidInterface
+    public function getUuid()
     {
         return $this->uuid;
     }

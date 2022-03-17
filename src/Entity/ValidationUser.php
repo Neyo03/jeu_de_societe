@@ -14,7 +14,7 @@ class ValidationUser
     #[ORM\Column(type: 'integer')]
     private $id;
 
-    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'validationUsers')]
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'validationUsers', cascade:["persist"])]
     #[ORM\JoinColumn(nullable: false)]
     private $user;
 
@@ -24,6 +24,11 @@ class ValidationUser
     #[ORM\Column(type: 'datetime')]
     private $tokenValidationExpiredAt;
 
+
+    public function __toString()
+    {
+        return $this->tokenValidation;
+    }
     public function getId(): ?int
     {
         return $this->id;
