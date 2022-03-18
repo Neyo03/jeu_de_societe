@@ -30,13 +30,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'string')]
     private $password;
 
-    /**
-     * @ORM\Column(type="string", length=180, unique=true)
-     * 
-     * @Assert\NotBlank()
-     * @Assert\Email()
-     * @Assert\Length(max="180")
-     */
+
+    #[ORM\Column(type: 'string',length:180, unique:true)]
+    #[Assert\NotBlank()]
+    #[Assert\Email()]
+    #[Assert\Length(max:"180")]
     private $email;
 
     /**
@@ -79,6 +77,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(type: 'string', length: 255)]
     private $profilPicture;
+
+    #[ORM\Column(type: 'datetime', nullable: true)]
+    private $lastLoginAt;
+
+    #[ORM\Column(type: 'integer')]
+    private $failedConnectionCount;
+
+    #[ORM\Column(type: 'datetime', nullable: true)]
+    private $blockedExpirationAt;
 
     
 
@@ -284,6 +291,42 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setProfilPicture(string $profilPicture): self
     {
         $this->profilPicture = $profilPicture;
+
+        return $this;
+    }
+
+    public function getLastLoginAt(): ?\DateTimeInterface
+    {
+        return $this->lastLoginAt;
+    }
+
+    public function setLastLoginAt(?\DateTimeInterface $lastLoginAt): self
+    {
+        $this->lastLoginAt = $lastLoginAt;
+
+        return $this;
+    }
+
+    public function getFailedConnectionCount(): ?int
+    {
+        return $this->failedConnectionCount;
+    }
+
+    public function setFailedConnectionCount(int $failedConnectionCount): self
+    {
+        $this->failedConnectionCount = $failedConnectionCount;
+
+        return $this;
+    }
+
+    public function getBlockedExpirationAt(): ?\DateTimeInterface
+    {
+        return $this->blockedExpirationAt;
+    }
+
+    public function setBlockedExpirationAt(?\DateTimeInterface $blockedExpirationAt): self
+    {
+        $this->blockedExpirationAt = $blockedExpirationAt;
 
         return $this;
     }
