@@ -1,0 +1,11 @@
+App\Entity\User:
+  properties:
+      email:
+          - Email: { groups: [registration] }
+          - NotBlank: { groups: [registration] }
+      plainPassword :
+          - NotBlank: { groups: [registration] }
+          - Length: { min: 8, groups: [registration] }
+      secondePlainPassword:
+          - NotBlank: { groups: [registration] }
+          - Length: {min: 8, groups: [registration] }  

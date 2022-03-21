@@ -23,8 +23,7 @@ class LoginListener extends AbstractController
        /** @var User $user */
         $user = $event->getAuthenticationToken()->getUser();
         $user->setLastLoginAt(new \DateTime());
-        $user->setFailedConnectionCount(0);
-        
+    
         $this->addFlash('success', "Your are successfully logged in as ".$user->getEmail());
 
         if ($user->getIsEnabled()===false) {

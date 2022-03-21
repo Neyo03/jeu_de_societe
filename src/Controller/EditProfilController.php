@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Form\EditUserFormType;
 use App\Repository\UserRepository;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,21 +24,33 @@ class EditProfilController extends AbstractController
             return $this->redirectToRoute("app_home");  
         }
 
-        $form = $this->createForm(EditUserFormType::class, $user);
+        $form = $this->createForm(EditUserFormType::class, $user, [
+            'validation_groups' => ['default']
+        ]);
         $form->handleRequest($request);
 
-
+        // dd($form->getData());
         if ($form->isSubmitted() &&  $form->isValid()) {
 
-            $entityManager->persist($user);
-            $entityManager->flush();
+            $profil_picture_user = $form->get("profilPicture")->getData();
+            
+            if ($profil_picture_user) {
+                $nomOriginalProfilPicture = pathinfo($profil_picture_user->getClientOriginalName(), PATHINFO_FILENAME);
 
-           
+                $nomUniqueProfilPicture = $nomOriginalProfilPicture . "-" . time() . "." . $profil_picture_user->guessExtension();
+                $profil_picture_user->move('uploads/profil_picture/'.$user->getId(), $nomUniqueProfilPicture);
+                $user->setProfilPicture($nomUniqueProfilPicture);
+            }
+
+            $user->setUpdatedAt(new DateTime());
+
+            $entityManager->persist($user);
+            $entityManager->flush();  
         }
 
         return $this->render('edit_profil/index.html.twig', [
             'form'=> $form->createView(),
-            'controller_name' => 'EditProfilController',
+            'user' => $user,
         ]);
     }
 }

@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\UserRepository;
 use App\Traits\EntityIdTrait;
+use App\Traits\EntityTimestampableTrait;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -23,6 +24,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     use EntityIdTrait;
+    use EntityTimestampableTrait;
 
     #[ORM\Column(type: 'json')]
     private $roles = [];
@@ -75,23 +77,20 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'string', length: 255)]
     private $pseudo;
 
-    #[ORM\Column(type: 'string', length: 255)]
+    #[ORM\Column(type: 'string', length: 255, nullable:true)]
     private $profilPicture;
 
     #[ORM\Column(type: 'datetime', nullable: true)]
     private $lastLoginAt;
 
-    #[ORM\Column(type: 'integer')]
-    private $failedConnectionCount;
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private $color;
 
-    #[ORM\Column(type: 'datetime', nullable: true)]
-    private $blockedExpirationAt;
-
-    
 
     public function __construct()
     {
         $this->uuid = Uuid::uuid4();
+        $this->createdAt = new DateTime();
         $this->profilPicture = "sans-visage.webp";
         $this->lastName = "";
         $this->firstName ="";
@@ -307,27 +306,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getFailedConnectionCount(): ?int
+    public function getColor(): ?string
     {
-        return $this->failedConnectionCount;
+        return $this->color;
     }
 
-    public function setFailedConnectionCount(int $failedConnectionCount): self
+    public function setColor(?string $color): self
     {
-        $this->failedConnectionCount = $failedConnectionCount;
+        $this->color = $color;
 
         return $this;
     }
 
-    public function getBlockedExpirationAt(): ?\DateTimeInterface
-    {
-        return $this->blockedExpirationAt;
-    }
-
-    public function setBlockedExpirationAt(?\DateTimeInterface $blockedExpirationAt): self
-    {
-        $this->blockedExpirationAt = $blockedExpirationAt;
-
-        return $this;
-    }
 }

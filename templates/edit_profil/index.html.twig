@@ -3,5 +3,18 @@
 {% block title %}Hello EditProfilController!{% endblock %}
 
 {% block body %}
-{{form(form)}}
+{{form_start(form)}}
+    {{form_row(form.pseudo)}}
+    {{form_row(form.firstName)}}
+    {{form_row(form.lastName)}}
+    {{form_row(form.description)}}
+    {{form_row(form.profilPicture)}}
+    {% if user.profilPicture == "sans-visage.webp" %}
+        <img src="{{asset("uploads/profil_picture/" ~ user.profilPicture)}}" alt=""> 
+    {% endif %}
+    {% if user.profilPicture %}
+        <img src="{{asset("uploads/profil_picture/" ~ user.id  ~ "/" ~ user.profilPicture)}}" alt="">
+    {% endif %}
+{{form_end(form)}}
+
 {% endblock %}

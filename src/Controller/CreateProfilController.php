@@ -6,7 +6,9 @@ use App\Entity\User;
 use App\Entity\ValidationUser;
 use App\Form\RegistrationFormType;
 use App\Service\Mailer;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
+use Monolog\DateTimeImmutable;
 use Ramsey\Uuid\Rfc4122\UuidInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -41,6 +43,7 @@ class CreateProfilController extends AbstractController
             );
            
             $user->eraseCredentials();
+            
             $entityManager->persist($user);
 
             $validationUser = new ValidationUser();

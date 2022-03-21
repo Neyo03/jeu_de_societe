@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -14,11 +15,21 @@ class EditUserFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('pseudo')
-            ->add('lastName')
-            ->add('firstName')
-            ->add('description')
-            ->add('profilPicture', FileType::class, ["mapped"=>false])
+            ->add('pseudo', null)
+            ->add('lastName', null)
+            ->add('firstName', null)
+            ->add('description', null, ["required" => false])
+            ->add('color', ChoiceType::class,[
+                "choices" =>[
+                    "Vert" => "#34eb6e",
+                    "Rouge" =>"#eb3434",
+                    "Noir" => "#000000",
+                    "Rose"=> "#ff00ee",
+                    "Jaune" => "#ffee00"
+                ],
+                "required" => false
+            ])
+            ->add('profilPicture', FileType::class, ["mapped"=>false, "required" => false])
             ->add('submit', SubmitType::class)
         ;
     }

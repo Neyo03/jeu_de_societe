@@ -23,20 +23,7 @@ class UserChecker implements UserCheckerInterface
       
         if (!$user instanceof AppUser) {
             return;
-        }
-
-        if (new DateTime() < $user->getBlockedExpirationAt()) {
-            
-            throw new CustomUserMessageAccountStatusException('Your user account is actually blocked, please retry in a few moments');
-        }
-        // if ($user->getFailedConnectionCount()<5) {
-        //     throw new CustomUserMessageAccountStatusException("Connection failed you have ". 5-$user->getFailedConnectionCount()." attempts left");
-        // }
-        if ($user->getFailedConnectionCount()>= 5) {
-            throw new CustomUserMessageAccountStatusException('You have too many failed login attempts, your account is blocked for 30 minutes');
-        }
-       
-        
+        }  
     }
 
     public function checkPostAuth(UserInterface $user): void

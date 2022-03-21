@@ -62,37 +62,6 @@ class LoginAuthenticator extends AbstractLoginFormAuthenticator
         return new RedirectResponse($this->urlGenerator->generate('app_home'));
     }
 
-    public function onAuthenticationFailure(Request $request, AuthenticationException $exception): Response
-    {
-    
-        if ($request->hasSession()) {
-            $request->getSession()->set(Security::AUTHENTICATION_ERROR, $exception);
-        }
-
-        // Get the User entity.
-        /** @var User $user */
-        $email = $request->request->get('email');
-        $user = $this->userRepository->findOneBy(['email' =>$email]);
-        
-        $countFailedConnection = $user->getFailedConnectionCount();
-        $countFailedConnection++;
-
-        if ($countFailedConnection >= 5) {
-            $user->setBlockedExpirationAt(new DateTime("+30 minutes"));
-            $user->setFailedConnectionCount(0);
-        }else {  
-            $user->setFailedConnectionCount($countFailedConnection);
-        }
-
-        $this->em->persist($user);
-        $this->em->flush();
-
-        $url = $this->getLoginUrl($request);
-        
-        return new RedirectResponse($url);
-    }
-
-
     protected function getLoginUrl(Request $request): string
     {
         return $this->urlGenerator->generate(self::LOGIN_ROUTE);
