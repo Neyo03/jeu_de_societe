@@ -86,6 +86,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $color;
 
+    #[ORM\OneToMany(mappedBy: 'participant', targetEntity: MessageParticipant::class)]
+    private $messageParticipants;
+
+    #[ORM\OneToMany(mappedBy: 'participant', targetEntity: DiscussionParticipant::class)]
+    private $discussionParticipants;
+
 
     public function __construct()
     {
@@ -97,6 +103,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->pseudo ="";
         $this->isEnabled = false;
         $this->validationUsers = new ArrayCollection();
+        $this->messageParticipants = new ArrayCollection();
+        $this->discussionParticipants = new ArrayCollection();
     }
 
     
@@ -314,6 +322,66 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setColor(?string $color): self
     {
         $this->color = $color;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, MessageParticipant>
+     */
+    public function getMessageParticipants(): Collection
+    {
+        return $this->messageParticipants;
+    }
+
+    public function addMessageParticipant(MessageParticipant $messageParticipant): self
+    {
+        if (!$this->messageParticipants->contains($messageParticipant)) {
+            $this->messageParticipants[] = $messageParticipant;
+            $messageParticipant->setParticipant($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMessageParticipant(MessageParticipant $messageParticipant): self
+    {
+        if ($this->messageParticipants->removeElement($messageParticipant)) {
+            // set the owning side to null (unless already changed)
+            if ($messageParticipant->getParticipant() === $this) {
+                $messageParticipant->setParticipant(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, DiscussionParticipant>
+     */
+    public function getDiscussionParticipants(): Collection
+    {
+        return $this->discussionParticipants;
+    }
+
+    public function addDiscussionParticipant(DiscussionParticipant $discussionParticipant): self
+    {
+        if (!$this->discussionParticipants->contains($discussionParticipant)) {
+            $this->discussionParticipants[] = $discussionParticipant;
+            $discussionParticipant->setParticipant($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDiscussionParticipant(DiscussionParticipant $discussionParticipant): self
+    {
+        if ($this->discussionParticipants->removeElement($discussionParticipant)) {
+            // set the owning side to null (unless already changed)
+            if ($discussionParticipant->getParticipant() === $this) {
+                $discussionParticipant->setParticipant(null);
+            }
+        }
 
         return $this;
     }
