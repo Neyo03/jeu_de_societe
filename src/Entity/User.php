@@ -86,10 +86,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $color;
 
-    #[ORM\OneToMany(mappedBy: 'participant', targetEntity: MessageParticipant::class)]
+    #[ORM\OneToMany(mappedBy: 'participant', targetEntity: MessageParticipant::class, cascade:["persist"])]
     private $messageParticipants;
 
-    #[ORM\OneToMany(mappedBy: 'participant', targetEntity: DiscussionParticipant::class)]
+    #[ORM\OneToMany(mappedBy: 'participant', targetEntity: DiscussionParticipant::class, cascade:["persist"])]
     private $discussionParticipants;
 
 
@@ -97,6 +97,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $this->uuid = Uuid::uuid4();
         $this->createdAt = new DateTime();
+        $this->updatedAt= new DateTime();
         $this->profilPicture = "sans-visage.webp";
         $this->lastName = "";
         $this->firstName ="";

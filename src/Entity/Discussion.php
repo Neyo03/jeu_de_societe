@@ -3,12 +3,14 @@
 namespace App\Entity;
 
 use App\Repository\DiscussionRepository;
+use App\Traits\EntityAuthorTrait;
 use App\Traits\EntityIdTrait;
 use App\Traits\EntityTimestampableTrait;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Ramsey\Uuid\Uuid;
 
 #[ORM\Entity(repositoryClass: DiscussionRepository::class)]
 class Discussion
@@ -16,21 +18,22 @@ class Discussion
 
     use EntityIdTrait;
     use EntityTimestampableTrait;
-
-    #[ORM\Column(type: 'string', length: 255)]
-    private $author;
+    use EntityAuthorTrait;
+   
 
     private $participants = [];
 
-    #[ORM\OneToMany(mappedBy: 'discussion', targetEntity: DiscussionParticipant::class)]
+    #[ORM\OneToMany(mappedBy: 'discussion', targetEntity: DiscussionParticipant::class, cascade:["persist"])]
     private $discussionParticipants;
 
-    #[ORM\OneToMany(mappedBy: 'discussion', targetEntity: Message::class)]
+    #[ORM\OneToMany(mappedBy: 'discussion', targetEntity: Message::class, cascade:["persist"])]
     private $messages;
 
     public function __construct()
     {
+        $this->uuid = Uuid::uuid4();
         $this->createdAt = new DateTime();
+        $this->updatedAt= new DateTime();
         $this->messages = new ArrayCollection();
         $this->discussionParticipants = new ArrayCollection();
         
@@ -41,17 +44,6 @@ class Discussion
         return $this->id;
     }
 
-    public function getAuthor(): ?string
-    {
-        return $this->author;
-    }
-
-    public function setAuthor(string $author): self
-    {
-        $this->author = $author;
-
-        return $this;
-    }
 
     public function getParticipants(): ?array
     {
@@ -66,7 +58,7 @@ class Discussion
     }
 
     /**
-     * @return Collection<int, DiscussionParticipant>
+     * @return Collection<int,DiscussionParticipant>
      */
     public function getDiscussionParticipants(): Collection
     {
@@ -96,7 +88,7 @@ class Discussion
     }
 
     /**
-     * @return Collection<int, Message>
+     * @return Collection<int,Message>
      */
     public function getMessages(): Collection
     {
@@ -123,5 +115,30 @@ class Discussion
         }
 
         return $this;
+    }
+
+
+    public function addParticipant(User $user)
+    {
+        $discussionParticipant = new DiscussionParticipant();
+        $discussionParticipant->setDiscussion($this);
+        $discussionParticipant->setParticipant($user);
+
+        $this->addDiscussionParticipant($discussionParticipant);
+    }
+
+    public function getAllParticipants()
+    {
+        $participants = [];
+        foreach ($this->getDiscussionParticipants()->getValues() as $participant ) {
+            $participants [] = $participant->getParticipant();
+        }
+        
+        return $participants;
+    }
+
+    public function isParticipantInDiscussion(User $participant){
+        $allParticipants = $this->getAllParticipants();
+        return in_array($participant, $allParticipants);
     }
 }

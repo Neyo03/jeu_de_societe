@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello GetDiscussionController!{% endblock %}
+
+{% block body %}
+
+
+<div >
+    {% for discussionByUser in allDiscussionByConnectedUser %}
+        <a href="{{path("app_get_one_discussion", {uuid : discussionByUser.discussion.uuid })}}">
+            {# Display pseudo of all contributor #} 
+             <p>
+                {% for participant in discussionByUser.discussion.allParticipants %}
+                    {% if participant != app.user %}
+                        {{participant.pseudo}} &nbsp;
+                    {% endif %}
+                {% endfor %}
+            </p>
+            {# Display lasted message #} 
+            {% set message = discussionByUser.discussion.messages[discussionByUser.discussion.messages|length - 1] %}
+            <span>
+                {{message.content ~ " - " ~ message.createdAt|date('H:i:s')  }}
+            </span>
+        
+        </a>
+        
+       
+
+
+    {% endfor %}
+</div>
+{% endblock %}

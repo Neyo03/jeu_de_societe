@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\MessageRepository;
+use App\Traits\EntityAuthorTrait;
 use App\Traits\EntityIdTrait;
 use App\Traits\EntityTimestampableTrait;
 use DateTime;
@@ -15,47 +16,36 @@ class Message
 {
 
     use EntityTimestampableTrait;
+    use EntityAuthorTrait;
     
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
     private $id;
 
-    #[ORM\Column(type: 'string', length: 255)]
-    private $author;
-
     #[ORM\Column(type: 'text')]
     private $content;
 
-    #[ORM\OneToMany(mappedBy: 'message', targetEntity: MessageParticipant::class, orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'message', targetEntity: MessageParticipant::class, orphanRemoval: true, cascade:["persist"])]
     private $messageParticipants;
 
-    #[ORM\ManyToOne(targetEntity: Discussion::class, inversedBy: 'messages')]
+    #[ORM\ManyToOne(targetEntity: Discussion::class, inversedBy: 'messages', cascade:["persist"])]
     #[ORM\JoinColumn(nullable: false)]
     private $discussion;
 
     public function __construct()
     {
         $this->createdAt = new DateTime();
+        $this->updatedAt= new DateTime();
         $this->messageParticipants = new ArrayCollection();
     }
+
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getAuthor(): ?string
-    {
-        return $this->author;
-    }
-
-    public function setAuthor(string $author): self
-    {
-        $this->author = $author;
-
-        return $this;
-    }
 
     public function getContent(): ?string
     {
@@ -70,7 +60,7 @@ class Message
     }
 
     /**
-     * @return Collection<int, MessageParticipant>
+     * @return Collection<int,MessageParticipant>
      */
     public function getMessageParticipants(): Collection
     {
@@ -108,6 +98,23 @@ class Message
     {
         $this->discussion = $discussion;
 
+        return $this;
+    }
+
+    public function addParticipant(User $user)
+    {
+        $messageParticipant = new MessageParticipant();
+        $messageParticipant->setMessage($this);
+        $messageParticipant->setParticipant($user);
+
+        $this->addMessageParticipant($messageParticipant);
+    }
+
+    public function setAllParticipants(array $participants): self
+    {
+        foreach ($participants as $participant) {
+            $this->addParticipant($participant);
+        }
         return $this;
     }
 }

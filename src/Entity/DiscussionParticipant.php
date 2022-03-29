@@ -20,11 +20,11 @@ class DiscussionParticipant
     #[ORM\Column(type: 'integer')]
     private $status;
 
-    #[ORM\ManyToOne(targetEntity: Discussion::class, inversedBy: 'discussionParticipants')]
+    #[ORM\ManyToOne(targetEntity: Discussion::class, inversedBy: 'discussionParticipants', cascade:["persist"])]
     #[ORM\JoinColumn(nullable: false)]
     private $discussion;
 
-    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'discussionParticipants')]
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'discussionParticipants', cascade:["persist"] )]
     #[ORM\JoinColumn(nullable: false)]
     private $participant;
 

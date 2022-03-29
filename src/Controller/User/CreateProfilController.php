@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\User;
 
 use App\Entity\User;
 use App\Entity\ValidationUser;
@@ -53,7 +53,6 @@ class CreateProfilController extends AbstractController
 
             $entityManager->flush();
 
-        
             $subject = "Registration Mail";
             $template = 'email/registration.html.twig';
             $datasMail = ["tokenValidation" => $user->getValidationUsers()->getValues()[0]] ;

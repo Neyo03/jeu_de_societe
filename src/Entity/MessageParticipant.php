@@ -11,7 +11,7 @@ class MessageParticipant
 
     const NOT_READ = 0;
     const READ = 1;
-    
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
@@ -20,11 +20,11 @@ class MessageParticipant
     #[ORM\Column(type: 'integer')]
     private $status;
 
-    #[ORM\ManyToOne(targetEntity: Message::class, inversedBy: 'messageParticipants')]
+    #[ORM\ManyToOne(targetEntity: Message::class, inversedBy: 'messageParticipants', cascade:["persist"])]
     #[ORM\JoinColumn(nullable: false)]
     private $message;
 
-    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'messageParticipants')]
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'messageParticipants', cascade:["persist"])]
     #[ORM\JoinColumn(nullable: false)]
     private $participant;
 

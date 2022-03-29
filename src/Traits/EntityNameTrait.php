@@ -20,7 +20,7 @@ trait EntityNameTrait
     /**
      * @var string|null
      *
-     * @Gedmo\Slug(fields={"name"})
+     * 
      *
      * @ORM\Column(length=100, unique=true)
      */

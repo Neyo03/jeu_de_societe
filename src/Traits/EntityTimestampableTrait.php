@@ -5,22 +5,10 @@ use Gedmo\Mapping\Annotation as Gedmo;
 
 trait EntityTimestampableTrait{
 
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(type="datetime")
-     *
-     * @Gedmo\Timestampable(on="create")
-     */
+    #[ORM\Column(type:"datetime")]
     protected $createdAt;
 
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(type="datetime")
-     *
-     * @Gedmo\Timestampable(on="update")
-     */
+    #[ORM\Column(type:"datetime")]
     protected $updatedAt;
 
     public function getCreatedAt(): \DateTime

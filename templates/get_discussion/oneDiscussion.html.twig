@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello GetDiscussionController!{% endblock %}
+
+{% block body %}
+
+
+<div >
+     
+    {% for message in OneDiscussionByUuid.messages %}
+        <div>
+            <p>{{message.author.pseudo}}</p>
+            <span>{{message.content}}</span>
+        </div>
+    {% endfor %}
+        
+</div>
+{% endblock %}
