@@ -7,12 +7,9 @@
 
 <div >
      
-    {% for message in OneDiscussionByUuid.messages %}
-        <div>
-            <p>{{message.author.pseudo}}</p>
-            <span>{{message.content}}</span>
-        </div>
-    {% endfor %}
-        
+    <discussion-message data-discussion="{{OneDiscussionByUuid.uuid}}" data-user="{{app.user.id}}"></discussion-message>
+    {{ render(controller(
+        'App\\Controller\\Message\\SendMessageController::sendMessage', {discussion : OneDiscussionByUuid}
+    )) }}    
 </div>
 {% endblock %}

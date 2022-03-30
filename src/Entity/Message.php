@@ -33,6 +33,17 @@ class Message
     #[ORM\JoinColumn(nullable: false)]
     private $discussion;
 
+
+    public function toArray()
+    {
+        return [
+            'id' => $this->id, 
+            'content' => $this->content,
+            'authorId' =>$this->author->getId(),
+            'authorPseudo' =>$this->author->getPseudo(),
+            
+        ];
+    }
     public function __construct()
     {
         $this->createdAt = new DateTime();
