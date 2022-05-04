@@ -6,8 +6,21 @@ use App\Repository\MessageParticipantRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: MessageParticipantRepository::class)]
-class MessageParticipant
+class MessageParticipant implements \JsonSerializable
 {
+
+    public function jsonSerialize()
+    {
+        $vars = get_object_vars($this);
+
+        return [
+            "id" => $this->id,
+            "status" => $this->status,
+            'participant' => $this->participant,
+            'messageid'=> $this->getMessage()->getId()
+            
+        ];
+    }
 
     const NOT_READ = 0;
     const READ = 1;

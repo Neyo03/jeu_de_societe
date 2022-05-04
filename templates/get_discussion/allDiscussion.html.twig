@@ -6,6 +6,7 @@
 
 
 <div >
+
     {% for discussionByUser in allDiscussionByConnectedUser %}
         <a href="{{path("app_get_one_discussion", {uuid : discussionByUser.discussion.uuid })}}">
             {# Display pseudo of all contributor #} 
@@ -17,16 +18,12 @@
                 {% endfor %}
             </p>
             {# Display lasted message #} 
-            {% set message = discussionByUser.discussion.messages[discussionByUser.discussion.messages|length - 1] %}
+            {% set message = discussionByUser.discussion.messages[discussionByUser.discussion.messages|length - 1] %} 
             <span>
                 {{message.content ~ " - " ~ message.createdAt|date('H:i:s')  }}
             </span>
         
         </a>
-        
-       
-
-
     {% endfor %}
 </div>
 {% endblock %}

@@ -45,6 +45,17 @@ class MessageParticipantRepository extends ServiceEntityRepository
         }
     }
 
+    public function getStatutByMessageAndParticipant($message, $participant): ?MessageParticipant
+    {
+        return $this->createQueryBuilder('mp')
+        ->andWhere('mp.message = :message')
+        ->setParameter(':message',$message )
+        ->andWhere('mp.participant = :participant')
+        ->setParameter(':participant',$participant )
+        ->getQuery()
+        ->getOneOrNullResult();
+    }
+
     // /**
     //  * @return MessageParticipant[] Returns an array of MessageParticipant objects
     //  */

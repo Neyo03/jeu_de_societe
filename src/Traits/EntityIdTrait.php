@@ -16,7 +16,6 @@ trait EntityIdTrait
     #[ORM\Column(type: 'string', length: 180, unique: true)]
     private $uuid;
 
-
     public function getId(): ?int
     {
         return $this->id;

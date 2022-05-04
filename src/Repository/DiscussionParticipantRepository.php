@@ -45,6 +45,27 @@ class DiscussionParticipantRepository extends ServiceEntityRepository
         }
     }
 
+    public function getStatutByDiscussionAndParticipant($discussion, $participant): ?DiscussionParticipant
+    {
+        return $this->createQueryBuilder('dp')
+        ->andWhere('dp.discussion = :discussion')
+        ->setParameter(':discussion',$discussion )
+        ->andWhere('dp.participant = :participant')
+        ->setParameter(':participant',$participant )
+        ->getQuery()
+        ->getOneOrNullResult();
+    }
+    public function getStatutByDiscussionAndExcludeCurrentUser($discussion, $currentUser): array
+    {
+        return $this->createQueryBuilder('dp')
+        ->andWhere('dp.discussion = :discussion')
+        ->setParameter(':discussion',$discussion )
+        ->andWhere('dp.participant != :participant')
+        ->setParameter(':participant',$currentUser )
+        ->getQuery()
+        ->getResult();
+    }
+
     // /**
     //  * @return DiscussionParticipant[] Returns an array of DiscussionParticipant objects
     //  */

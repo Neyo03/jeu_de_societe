@@ -41,6 +41,8 @@ class Message
             'content' => $this->content,
             'authorId' =>$this->author->getId(),
             'authorPseudo' =>$this->author->getPseudo(),
+            'createdAt' => $this->getCreatedAt(),
+            'messageParticipants' => $this->getMessageParticipants()
             
         ];
     }

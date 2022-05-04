@@ -4,12 +4,115 @@
 
 {% block body %}
 
+<style>
+    body{
+        /* overflow: hidden; */
+    }
+    .Message_current_user {
+        padding : 8px 10px;
+        background: lightgrey ;
+        margin-top : 10px;
+       
+        min-width:30%;
+        max-width:50%;
+        heigth:50px;
+        border-radius : 5px 5px 0px 5px;
+        text-align : right;
+        word-break: break-word;
+        margin-left:67%;
+    }
+    .Message_other_user {
+        padding : 8px 10px;
+        background: lightblue; 
+        /* transform : scaleY(-1);   */
+        margin-top : 10px;
+        
+        
+        min-width:30%;
+        max-width:50%;
+        heigth:50px;
+        border-radius : 5px 5px 5px 0px;
+        word-break: break-word;
 
-<div >
+    }
+    .Message_current_user>p {
+         margin:0px
+    }
+    .Message_other_user>p {
+        margin:0px
+
+    }
+    .Message_list{
+        margin : 0 auto;
+        height:85vh !important;
+        overflow-y: scroll;
+        overflow-x: hidden;
+        padding:15px;
+        display : flex; 
+       
+        align-items: start;
+        flex-direction :column-reverse;
+        width : 30%;
+        background : #fff ;
+    }
+    .Message_participant{
+        position: absolute;
+        top :8px;
+        right : 326px;
+        
+    }
+
+    .Message_participant>div{
+        border-bottom : .5px solid lightgrey;
+        background:#fff;
+        padding : 15px;
+        height : 100px;
+        width: 300px;
+    }
+    #Message_send_form {
+        margin : 0 auto;
+        display:flex;
+        align-items:center;
+        width:30.6%;
+        padding:10px;
+        background : #fff ;
+    }
+    #Message_send_form>textarea {
+        padding:10px 10px 0px 10px;
+        width:82%;
+        border-radius:30px;
+        margin-right: 5px;
+    }
+     #MessageMessage_feed_and_form_send_form>button {
+        padding:10px;
+        height : 35px;
+        width : 35px;
+
+        border-radius:50%;
+      
+    }
+</style>
+<div>
      
-    <discussion-message data-discussion="{{OneDiscussionByUuid.uuid}}" data-user="{{app.user.id}}"></discussion-message>
+    <discussion-message data-discussion="{{OneDiscussionByUuid.uuid}}" data-user="{{app.user.id}}" data-user-pseudo="{{app.user.pseudo}}"></discussion-message>
     {{ render(controller(
-        'App\\Controller\\Message\\SendMessageController::sendMessage', {discussion : OneDiscussionByUuid}
-    )) }}    
+        'App\\Controller\\Message\\SendMessageController::sendMessageForm', {discussion : OneDiscussionByUuid}
+    )) }} 
+    <div class="Message_participant">
+        {% for participant in OneDiscussionByUuid.allParticipants %}
+        
+            {% if participant.id != app.user.id %}
+            
+                <div>
+                    {{participant.pseudo}}
+                </div>
+            {% endif %}
+
+                
+        {% endfor %}
+      
+       
+    
+    </div>   
 </div>
 {% endblock %}

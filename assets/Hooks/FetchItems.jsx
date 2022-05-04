@@ -1,12 +1,12 @@
 import axios from "axios";
-import { useState } from "react";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 
   export function fetchItems(url) {
     const [loading, setLoading] = useState(false);
     const [items, setItems] = useState([]);
 
     const load = useEffect(async ()=>{
+      console.log('salut');
       setLoading(true)
       const response = await axios({
         method: 'GET',
@@ -14,6 +14,7 @@ import { useEffect } from "react";
       })
       
       const responseData = await response.data;
+     
       if (response.status == 200) {
         setItems(responseData);
       }else{
@@ -21,10 +22,13 @@ import { useEffect } from "react";
       }
       setLoading(false);
     },[url])
+
     
     return {
+      setItems,
       items,
       loading,
       load
     }
-  }
+}
+

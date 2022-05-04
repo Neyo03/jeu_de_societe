@@ -7,7 +7,7 @@ import Messages from '../Components/Messages';
 class MessagesElement extends HTMLElement {
 
     connectedCallback(){
-       render(<Messages uuid={this.attributes['data-discussion'].value} user={this.attributes['data-user'].value} />, this);
+       render(<Messages uuid={this.attributes['data-discussion'].value} user={{ id :this.attributes['data-user'].value, pseudo : this.attributes['data-user-pseudo'].value}} />, this);
     }
     disconnectedCallback(){
         unmountComponentAtNode(this)

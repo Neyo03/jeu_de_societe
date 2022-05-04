@@ -21,8 +21,20 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
 #[UniqueEntity(fields: ['uuid'], message: 'There is already an account with this uuid')]
-class User implements UserInterface, PasswordAuthenticatedUserInterface
+class User implements UserInterface, PasswordAuthenticatedUserInterface, \JsonSerializable
 {
+    public function jsonSerialize()
+    {
+        $vars = get_object_vars($this);
+
+        return [
+            "id" => $this->id,
+            "pseudo" => $this->pseudo,
+            'email' => $this->email
+            
+        ];
+    }
+
     use EntityIdTrait;
     use EntityTimestampableTrait;
 
